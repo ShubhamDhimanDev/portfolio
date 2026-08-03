@@ -1,0 +1,24 @@
+# Apache config for api/ on shared/cPanel-style PHP hosting.
+
+<FilesMatch "^\.env">
+    Require all denied
+</FilesMatch>
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Block direct web access to internal-only directories - the front
+    # controller (index.php) is the only thing that should read these.
+    RewriteRule ^(vendor|config|lib|migrations|storage)(/|$) - [F,L]
+
+    # Let existing files/directories be served as-is: endpoints/*.php
+    # (including the two flat lead-mail scripts, which are NOT routed
+    # through index.php - see docs/api-backend.md §7), uploads/*, index.php.
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # Everything else (the resource-style /api/... routes) goes through the
+    # front controller.
+    RewriteRule ^ index.php [QSA,L]
+</IfModule>

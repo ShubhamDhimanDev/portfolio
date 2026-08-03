@@ -1,0 +1,23 @@
+CREATE TABLE IF NOT EXISTS blog_posts (
+    id                        BIGINT UNSIGNED NOT NULL AUTO_INCREMENT,
+    title                     VARCHAR(255) NOT NULL,
+    slug                      VARCHAR(255) NOT NULL,
+    excerpt                   VARCHAR(500) NULL,
+    cover_media_id            BIGINT UNSIGNED NULL,
+    status                    ENUM('draft','published','archived') NOT NULL DEFAULT 'draft',
+    allow_comments            TINYINT(1) NOT NULL DEFAULT 0,
+    require_comment_approval  TINYINT(1) NOT NULL DEFAULT 1,
+    author_name               VARCHAR(120) NOT NULL,
+    author_linkedin_url       VARCHAR(255) NULL,
+    created_at                DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at                DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    published_at              DATETIME NULL,
+    deleted_at                DATETIME NULL,
+    PRIMARY KEY (id),
+    UNIQUE KEY uq_blog_posts_slug (slug),
+    KEY idx_blog_posts_status (status),
+    KEY idx_blog_posts_deleted_at (deleted_at),
+    KEY idx_blog_posts_published_at (published_at),
+    KEY idx_blog_posts_cover_media_id (cover_media_id),
+    CONSTRAINT fk_blog_posts_cover_media FOREIGN KEY (cover_media_id) REFERENCES media(id) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

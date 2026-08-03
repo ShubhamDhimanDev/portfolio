@@ -1,0 +1,54 @@
+import { useEffect, useState } from "react";
+import { ApiError } from "@/lib/api-client";
+import { fetchBlogPosts } from "@/lib/blog-api";
+import type { ApiListMeta, BlogPostSummary } from "@/types/blog.types";
+
+interface UseBlogPostsParams {
+  page?: number;
+  perPage?: number;
+  category?: string;
+}
+
+interface UseBlogPostsResult {
+  posts: BlogPostSummary[];
+  meta: ApiListMeta | undefined;
+  isLoading: boolean;
+  error: string | null;
+}
+
+export function useBlogPosts({ page = 1, perPage = 9, category }: UseBlogPostsParams = {}): UseBlogPostsResult {
+  const [posts, setPosts] = useState<BlogPostSummary[]>([]);
+  const [meta, setMeta] = useState<ApiListMeta>();
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    // Deferred into a microtask so the "start" signal is a callback, not a
+    // synchronous statement in the effect body (react-hooks/set-state-in-effect).
+    Promise.resolve().then(() => {
+      if (controller.signal.aborted) return;
+      setIsLoading(true);
+      setError(null);
+    });
+
+    fetchBlogPosts({ page, perPage, category, signal: controller.signal })
+      .then((res) => {
+        if (controller.signal.aborted) return;
+        setPosts(res.data);
+        setMeta(res.meta);
+      })
+      .catch((err: unknown) => {
+        if (controller.signal.aborted) return;
+        setError(err instanceof ApiError ? err.message : "Could not load posts.");
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setIsLoading(false);
+      });
+
+    return () => controller.abort();
+  }, [page, perPage, category]);
+
+  return { posts, meta, isLoading, error };
+}

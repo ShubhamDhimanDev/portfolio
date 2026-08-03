@@ -1,0 +1,15 @@
+{
+    "name": "ecommlab/api",
+    "description": "Pure-PHP backend API for the EcommLab marketing site (lead-mail endpoints + blog/admin backend). No framework - Composer is scoped to this directory only, for PHPMailer and a .env loader.",
+    "type": "project",
+    "license": "proprietary",
+    "require": {
+        "php": ">=8.1",
+        "phpmailer/phpmailer": "^6.9",
+        "vlucas/phpdotenv": "^5.6"
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    }
+}
