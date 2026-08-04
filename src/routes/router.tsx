@@ -11,6 +11,7 @@ import { AdminPostsListPage } from "@/pages/admin/AdminPostsListPage";
 import { AdminPostEditorPage } from "@/pages/admin/AdminPostEditorPage";
 import { AdminCategoriesPage } from "@/pages/admin/AdminCategoriesPage";
 import { AdminCommentsPage } from "@/pages/admin/AdminCommentsPage";
+import { AdminLeadsPage } from "@/pages/admin/AdminLeadsPage";
 import { AdminMediaPage } from "@/pages/admin/AdminMediaPage";
 import { AdminAuthGuard } from "@/components/admin/AdminAuthGuard";
 import { AdminAuthProvider } from "@/contexts/AdminAuthContext";
@@ -47,6 +48,7 @@ export const router = createBrowserRouter([
               { path: "posts/:id/edit", element: <AdminPostEditorPage /> },
               { path: "categories", element: <AdminCategoriesPage /> },
               { path: "comments", element: <AdminCommentsPage /> },
+              { path: "leads", element: <AdminLeadsPage /> },
               { path: "media", element: <AdminMediaPage /> },
             ],
           },

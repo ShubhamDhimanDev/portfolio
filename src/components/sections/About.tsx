@@ -7,19 +7,19 @@ import { fadeUp } from "@/lib/motion";
 const STORY = [
   {
     label: "How I started",
-    body: "I got into development by taking apart small business problems - a shop owner's spreadsheet, a clinic's paper appointment book - and asking what a proper system would look like. That instinct to formalize messy, real-world processes into clean software is still what pulls me into a project.",
+    body: "A PC arrived home in 2004 and I've barely looked away since. Not for the games — though Counter-Strike stuck around — but for the realization that typed instructions make a machine do exactly what you ask. I taught myself to code through a mechanical engineering degree, and that original feeling of giving a system precise commands and watching it respond is still what gets me into the chair every morning.",
   },
   {
     label: "What I enjoy building",
-    body: "I gravitate toward products with real operational weight behind them: booking systems, multi-tenant platforms, anything with state that has to stay correct under concurrent use. Sessionora exists because I wanted to build that kind of system properly, not just ship a demo.",
+    body: "Real-time systems, complex infrastructure, anything where state has to stay correct under concurrent load — that's where my attention naturally goes. Not because it looks impressive, but because the problems are genuinely hard and the margins for error are real. I like building things with operational weight: systems that have to keep working even when conditions get messy.",
   },
   {
     label: "Why architecture matters",
-    body: "Most bugs I've had to fix in production were architecture decisions wearing a disguise. I care about schema design, clear service boundaries, and choosing boring, provable solutions over clever ones - because the code that's easy to reason about in year one is the code that survives year three.",
+    body: "Most bugs I've traced in production turned out to be architecture decisions wearing the disguise of a code problem. Good structure gives a project the ability to scale, to be read by someone who wasn't there on day one, and to survive changes in requirements without collapsing. I treat architecture as the part of the work that outlasts any individual feature.",
   },
   {
     label: "Why I enjoy solving business problems",
-    body: "The best technical decisions are downstream of understanding what a business actually needs. I like sitting close to that problem - talking through edge cases with a founder or an ops team - before a single line of code gets written.",
+    body: "Technically correct software that nobody needed is still a failure. I want to understand the problem well enough to push back — to know when a simpler solution fits better, or when the real issue sits upstream of anything code can touch. That clarity is what makes the engineering decisions actually matter, and it's the part of the work I find most interesting.",
   },
 ];
 

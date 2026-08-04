@@ -1,0 +1,6 @@
+vendor
+.env
+storage/*
+!storage/.gitkeep
+uploads/*
+!uploads/.gitkeep

@@ -128,6 +128,20 @@ export interface AdminComment {
   post_slug: string;
 }
 
+export type LeadStatus = "new" | "contacted" | "archived";
+
+export interface AdminLead {
+  id: number;
+  name: string;
+  email: string;
+  phone: string | null;
+  message: string;
+  source: string;
+  status: LeadStatus;
+  ip_address: string | null;
+  created_at: string;
+}
+
 export interface AdminMedia {
   id: number;
   file_name: string;

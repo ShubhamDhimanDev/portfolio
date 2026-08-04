@@ -5,11 +5,13 @@ import type {
   AdminBlogPostListItem,
   AdminCategory,
   AdminComment,
+  AdminLead,
   AdminMedia,
   AdminUser,
   BlogPostFormPayload,
   BlogPostStatus,
   CommentStatus,
+  LeadStatus,
 } from "@/types/admin.types";
 
 interface AdminSessionData {
@@ -121,6 +123,21 @@ export function adminRejectComment(id: number) {
 
 export function adminDeleteComment(id: number) {
   return api.delete<{ ok: true; message: string }>(`/admin/comments/${id}`);
+}
+
+// --- Leads (contact form submissions) -------------------------------------
+
+export function adminFetchLeads(status?: LeadStatus) {
+  const qs = status ? `?status=${status}` : "";
+  return api.get<ApiListResponse<AdminLead>>(`/admin/leads${qs}`);
+}
+
+export function adminUpdateLeadStatus(id: number, status: LeadStatus) {
+  return api.post<{ ok: true; message: string }>(`/admin/leads/${id}/status`, { status });
+}
+
+export function adminDeleteLead(id: number) {
+  return api.delete<{ ok: true; message: string }>(`/admin/leads/${id}`);
 }
 
 // --- Media ---------------------------------------------------------------

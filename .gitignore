@@ -31,3 +31,8 @@ api/storage/*
 api/uploads/*
 !api/uploads/.gitkeep
 api/composer.phar
+
+# docker-compose local dev env (see .env.example)
+.env
+
+testing

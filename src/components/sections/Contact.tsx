@@ -5,6 +5,7 @@ import { Container } from "@/components/ui/Container";
 import { Magnetic } from "@/components/ui/Magnetic";
 import { Reveal } from "@/components/ui/Reveal";
 import { GlowOrb } from "@/components/ui/GridBackground";
+import { ContactForm } from "@/components/sections/ContactForm";
 import { staggerContainer, fadeUp, viewportOnce } from "@/lib/motion";
 import { PROFILE, SOCIAL_LINKS } from "@/data/profile";
 
@@ -78,6 +79,17 @@ export function Contact() {
             </motion.a>
           ))}
         </motion.div>
+
+        <Reveal delay={0.2} className="mt-16 w-full max-w-lg">
+          <div className="flex items-center gap-4">
+            <div className="h-px flex-1 bg-border" />
+            <span className="font-mono text-xs uppercase tracking-[0.2em] text-subtle">Or send a message</span>
+            <div className="h-px flex-1 bg-border" />
+          </div>
+          <div className="mt-8">
+            <ContactForm />
+          </div>
+        </Reveal>
       </Container>
     </section>
   );

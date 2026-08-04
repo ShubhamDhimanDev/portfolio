@@ -81,14 +81,14 @@ export function AdminCommentsPage() {
     <div>
       <h1 className="text-2xl font-semibold tracking-tight text-foreground">Comments</h1>
 
-      <div className="mt-6 flex w-fit gap-1 rounded-full border border-border bg-surface p-1">
+      <div className="mt-6 flex w-full gap-1 overflow-x-auto rounded-full border border-border bg-surface p-1 sm:w-fit">
         {STATUS_TABS.map((tab) => (
           <button
             key={tab.value}
             type="button"
             onClick={() => setStatus(tab.value)}
             className={cn(
-              "rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors",
+              "shrink-0 rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors",
               status === tab.value ? "bg-foreground text-background" : "text-muted hover:text-foreground",
             )}
           >
@@ -130,7 +130,7 @@ export function AdminCommentsPage() {
 
               <p className="mt-3 whitespace-pre-line text-sm leading-relaxed text-muted">{comment.content}</p>
 
-              <div className="mt-4 flex items-center gap-2 border-t border-border pt-4">
+              <div className="mt-4 flex flex-wrap items-center gap-2 border-t border-border pt-4">
                 <button
                   type="button"
                   disabled={busyId === comment.id || comment.status === "approved"}

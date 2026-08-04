@@ -14,13 +14,18 @@ export function ParticleField({ count = 800, radius = 2.6 }: ParticleFieldProps)
   const positions = useMemo(() => {
     const random = createSeededRandom(1337);
     const arr = new Float32Array(count * 3);
+    // Fibonacci sphere lattice: unlike random theta/phi sampling, this spreads
+    // points with no clumps or gaps, so density stays even from every angle as
+    // the sphere rotates/stretches instead of exposing random-noise voids.
+    const goldenAngle = Math.PI * (3 - Math.sqrt(5));
     for (let i = 0; i < count; i++) {
-      const theta = random() * Math.PI * 2;
-      const phi = Math.acos(2 * random() - 1);
+      const y = 1 - (i / Math.max(1, count - 1)) * 2;
+      const ringRadius = Math.sqrt(Math.max(0, 1 - y * y));
+      const theta = goldenAngle * i;
       const r = radius * (0.85 + random() * 0.2);
-      arr[i * 3] = r * Math.sin(phi) * Math.cos(theta);
-      arr[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
-      arr[i * 3 + 2] = r * Math.cos(phi);
+      arr[i * 3] = r * ringRadius * Math.cos(theta);
+      arr[i * 3 + 1] = r * y;
+      arr[i * 3 + 2] = r * ringRadius * Math.sin(theta);
     }
     return arr;
   }, [count, radius]);

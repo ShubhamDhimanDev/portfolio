@@ -10,9 +10,9 @@ export const NAV_LINKS = [
   { label: "Stack", href: "#stack", type: "hash" },
   { label: "Work", href: "#projects", type: "hash" },
   { label: "Case Studies", href: "#case-studies", type: "hash" },
-  { label: "Blog", href: "/blog", type: "route" },
   { label: "Experience", href: "#experience", type: "hash" },
   { label: "Contact", href: "#contact", type: "hash" },
+  { label: "Blog", href: "/blog", type: "route" },
 ] as const;
 
 export const SECTION_IDS = [
@@ -21,8 +21,6 @@ export const SECTION_IDS = [
   "stack",
   "projects",
   "case-studies",
-  "open-source",
   "experience",
-  "github",
   "contact",
 ] as const;

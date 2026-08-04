@@ -8,6 +8,10 @@ export function setLenisInstance(lenis: Lenis | null) {
 
 export function scrollToTarget(target: string | HTMLElement, offset = -20) {
   if (instance) {
+    // Document height may have changed since Lenis last measured it (e.g. a
+    // route change swapped in a taller page) — resize before scrolling so
+    // the target offset isn't clamped to a stale, shorter scroll range.
+    instance.resize();
     instance.scrollTo(target, { offset, duration: 1.1 });
     return;
   }
