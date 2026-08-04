@@ -13,5 +13,4 @@ CREATE TABLE IF NOT EXISTS admin_users (
 -- this file is checked into the repo.
 INSERT IGNORE INTO admin_users (email, password_hash, created_at)
 VALUES
-    ('shubham@ecommlab.in', '$2y$12$sTW8H03Y409V6JkWHt4tZuTg6.9IoxAaKlpA1zjACu6bcX/EZftIi', NOW()),
-    ('priyanshu@ecommlab.in', '$2y$12$FpdzVxMDgA/omVu/hLoM2OKeGJ6bTa20/BHEhxAsjDAbZc5NpZbRy', NOW());
+    ('shubham@insanedev.in', '$2y$12$sTW8H03Y409V6JkWHt4tZuTg6.9IoxAaKlpA1zjACu6bcX/EZftIi', NOW());
