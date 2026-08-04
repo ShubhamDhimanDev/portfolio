@@ -3,8 +3,7 @@
 declare(strict_types=1);
 
 /**
- * Dynamic sitemap.xml - homepage + published blog posts. Case studies are
- * intentionally excluded (out of scope for SEO).
+ * Dynamic sitemap.xml - homepage, case studies, and published blog posts.
  *
  * Routed here for /sitemap.xml by the root .htaccess (see public/.htaccess).
  */
@@ -35,6 +34,17 @@ function sitemap_url(string $loc, ?string $lastmod, string $changefreq, string $
     return $out;
 }
 
+// Case studies are static frontend content (not in the database) - keep this
+// list in sync with the `slug` values in src/data/case-studies.ts.
+$caseStudySlugs = [
+    'ceulocker-legacy-database-migration',
+    'backpackerlist-candidate-search-api',
+    'multi-site-cicd-docker-pipeline',
+    'sessionora-multi-tenant-scheduling',
+    'ai-chatbot-rag-pipeline',
+    'restaurant-live-kitchen-display',
+];
+
 $siteUrl = sitemap_site_url();
 $pdo = get_pdo();
 
@@ -47,6 +57,10 @@ echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
 
 echo sitemap_url($siteUrl . '/', null, 'monthly', '1.0');
 echo sitemap_url($siteUrl . '/blog', null, 'daily', '0.8');
+
+foreach ($caseStudySlugs as $slug) {
+    echo sitemap_url($siteUrl . '/case-studies/' . $slug, null, 'yearly', '0.6');
+}
 
 foreach ($posts as $post) {
     $lastmod = $post['updated_at'] !== null ? date('c', strtotime((string) $post['updated_at'])) : null;

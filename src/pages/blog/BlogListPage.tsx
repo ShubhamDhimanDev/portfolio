@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useSearchParams } from "react-router-dom";
+import { useLoaderData, useSearchParams } from "react-router";
 import { Container } from "@/components/ui/Container";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { GridBackground } from "@/components/ui/GridBackground";
@@ -9,17 +9,43 @@ import { BlogPagination } from "@/components/blog/BlogPagination";
 import { useBlogPosts } from "@/hooks/useBlogPosts";
 import { useBlogCategories } from "@/hooks/useBlogCategories";
 import { staggerContainer, viewportOnce } from "@/lib/motion";
+import { fetchBlogCategories, fetchBlogPosts } from "@/lib/blog-api";
+
+export async function loader() {
+  const [postsRes, categoriesRes] = await Promise.all([
+    fetchBlogPosts({ page: 1, perPage: 9 }).catch(() => null),
+    fetchBlogCategories().catch(() => null),
+  ]);
+  return {
+    posts: postsRes?.data ?? [],
+    meta: postsRes?.meta,
+    categories: categoriesRes?.data ?? [],
+  };
+}
+
+export function meta() {
+  return [
+    { title: "Blog - Shubham Dhiman" },
+    {
+      name: "description",
+      content:
+        "Architecture decisions, engineering trade-offs, and the occasional war story from building SaaS products in production.",
+    },
+  ];
+}
 
 export function BlogListPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const page = Number(searchParams.get("page") ?? "1") || 1;
   const category = searchParams.get("category");
+  const preloaded = useLoaderData<typeof loader>();
 
-  const { categories } = useBlogCategories();
+  const { categories } = useBlogCategories(preloaded?.categories);
   const { posts, meta, isLoading, error } = useBlogPosts({
     page,
     perPage: 9,
     category: category ?? undefined,
+    initialData: preloaded ? { posts: preloaded.posts, meta: preloaded.meta } : undefined,
   });
 
   function updateParams(next: { page?: number; category?: string | null }) {
@@ -101,3 +127,5 @@ export function BlogListPage() {
     </section>
   );
 }
+
+export default BlogListPage;

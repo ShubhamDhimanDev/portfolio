@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router";
 import { motion } from "framer-motion";
 import { ArrowLeft, Clock } from "lucide-react";
 import { LinkedinIcon } from "@/components/icons/BrandIcons";
@@ -184,3 +184,5 @@ export function BlogPostPage() {
     </article>
   );
 }
+
+export default BlogPostPage;

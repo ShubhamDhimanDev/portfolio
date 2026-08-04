@@ -1,6 +1,12 @@
 import { getCsrfToken } from "@/lib/admin-session";
 
-const API_BASE = "/api";
+// In the browser this is proxied/served same-origin. During `react-router build`,
+// loaders run in Node (no origin to resolve a relative URL against), so prerendering
+// needs an absolute API origin instead.
+const API_BASE =
+  typeof window === "undefined"
+    ? `${process.env.PRERENDER_API_BASE_URL ?? "http://localhost:8000"}/api`
+    : "/api";
 
 export class ApiError extends Error {
   status: number;

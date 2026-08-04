@@ -1,4 +1,4 @@
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate, Outlet } from "react-router";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 
 export function AdminAuthGuard() {
@@ -18,3 +18,5 @@ export function AdminAuthGuard() {
 
   return <Outlet />;
 }
+
+export default AdminAuthGuard;

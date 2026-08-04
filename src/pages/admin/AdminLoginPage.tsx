@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from "react";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router";
 import { Lock } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
@@ -82,3 +82,5 @@ export function AdminLoginPage() {
     </div>
   );
 }
+
+export default AdminLoginPage;
