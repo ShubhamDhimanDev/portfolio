@@ -42,6 +42,7 @@ if ($name === '' || $company === '' || $phone === '' || $email === '') {
 }
 
 $to = env('LEADS_TO_ADDRESS', 'shubham@ecommlab.in') ?? 'shubham@ecommlab.in';
+$cc = env('LEADS_CC_ADDRESS', '') ?: null;
 $subject = 'New Strategy Call Lead - ' . $company;
 
 $serviceList = empty($selectedServices) ? 'None selected' : implode(', ', $selectedServices);
@@ -63,7 +64,7 @@ $messageLines = [
 
 $message = implode("\n", $messageLines);
 
-$sent = send_transactional_mail($to, $subject, $message, $email, $name);
+$sent = send_transactional_mail($to, $subject, $message, $email, $name, $cc);
 
 if (!$sent) {
     json_response(['ok' => false, 'message' => 'Unable to send email right now. Please try again later.'], 500);

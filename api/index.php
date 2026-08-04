@@ -92,6 +92,13 @@ $routes = [
     make_route('GET', 'admin/media', 'media.php', 'admin_list', [], true),
     make_route('POST', 'admin/media/upload', 'media.php', 'admin_upload', [], true, true),
     make_route('DELETE', 'admin/media/{id}', 'media.php', 'admin_delete', ['id'], true, true),
+
+    // --- Admin: leads (contact form submissions) ---------------------------
+    // Rows are created by the flat endpoints/send-contact-message.php script,
+    // not through this front controller - see docs/api-backend.md §7.
+    make_route('GET', 'admin/leads', 'leads.php', 'admin_list', [], true),
+    make_route('POST', 'admin/leads/{id}/status', 'leads.php', 'admin_update_status', ['id'], true, true),
+    make_route('DELETE', 'admin/leads/{id}', 'leads.php', 'admin_delete', ['id'], true, true),
 ];
 
 $requestPath = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH) ?? '/';

@@ -40,6 +40,9 @@ services:
       SMTP_FROM_ADDRESS: ${SMTP_FROM_ADDRESS:-noreply@ecommlab.in}
       SMTP_FROM_NAME: ${SMTP_FROM_NAME:-Ecomm Lab}
       LEADS_TO_ADDRESS: ${LEADS_TO_ADDRESS:-}
+      LEADS_CC_ADDRESS: ${LEADS_CC_ADDRESS:-}
+      RECAPTCHA_SECRET_KEY: ${RECAPTCHA_SECRET_KEY:-}
+      RECAPTCHA_MIN_SCORE: ${RECAPTCHA_MIN_SCORE:-0.5}
     ports:
       - "8000:8000"
     volumes:
@@ -76,6 +79,7 @@ services:
       - api
     environment:
       VITE_API_PROXY_TARGET: http://api:8000
+      VITE_RECAPTCHA_SITE_KEY: ${VITE_RECAPTCHA_SITE_KEY:-}
     ports:
       - "5173:5173"
     volumes:

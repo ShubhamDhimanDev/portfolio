@@ -1,5 +1,5 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
-import { FileText, FolderOpen, Image, LogOut, MessageSquare } from "lucide-react";
+import { FileText, FolderOpen, Image, Inbox, LogOut, MessageSquare } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAdminAuth } from "@/hooks/useAdminAuth";
 
@@ -7,6 +7,7 @@ const NAV_ITEMS = [
   { to: "/admin/posts", label: "Posts", icon: FileText },
   { to: "/admin/categories", label: "Categories", icon: FolderOpen },
   { to: "/admin/comments", label: "Comments", icon: MessageSquare },
+  { to: "/admin/leads", label: "Leads", icon: Inbox },
   { to: "/admin/media", label: "Media", icon: Image },
 ];
 

@@ -50,11 +50,17 @@ function send_transactional_mail(
     string $subject,
     string $body,
     ?string $replyToEmail = null,
-    ?string $replyToName = null
+    ?string $replyToName = null,
+    ?string $cc = null
 ): bool {
     try {
         $mailer = get_mailer();
         $mailer->addAddress($to);
+
+        if ($cc !== null && $cc !== '' && strcasecmp($cc, $to) !== 0) {
+            $mailer->addCC($cc);
+        }
+
         $mailer->Subject = $subject;
         $mailer->Body = $body;
         $mailer->isHTML(false);

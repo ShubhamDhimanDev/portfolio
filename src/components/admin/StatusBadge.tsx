@@ -8,6 +8,8 @@ const COLORS: Record<string, string> = {
   approved: "border-signal/40 bg-signal/10 text-signal",
   rejected: "border-red-500/40 bg-red-500/10 text-red-400",
   spam: "border-red-500/40 bg-red-500/10 text-red-400",
+  new: "border-amber-500/40 bg-amber-500/10 text-amber-400",
+  contacted: "border-signal/40 bg-signal/10 text-signal",
 };
 
 export function StatusBadge({ status }: { status: string }) {
