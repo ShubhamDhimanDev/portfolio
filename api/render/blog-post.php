@@ -177,7 +177,7 @@ function render_post_html(array $post): string
         'publisher' => [
             '@type' => 'Organization',
             'name' => 'EcommLab',
-            'logo' => ['@type' => 'ImageObject', 'url' => $siteUrl . '/assets/Final logo-01-02.png'],
+            'logo' => ['@type' => 'ImageObject', 'url' => $siteUrl . '/og-image.png'],
         ],
         'datePublished' => $post['published_at'] ?? $post['created_at'],
         'dateModified' => $post['updated_at'],

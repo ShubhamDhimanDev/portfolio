@@ -1,0 +1,97 @@
+services:
+  db:
+    image: mysql:8.4
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_NAME:-portfolio}
+      MYSQL_USER: ${DB_USER:-portfolio}
+      MYSQL_PASSWORD: ${DB_PASS:-portfolio}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root}
+    ports:
+      - "${DB_PORT:-3306}:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${DB_ROOT_PASSWORD:-root}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build:
+      context: ./api
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_NAME: ${DB_NAME:-portfolio}
+      DB_USER: ${DB_USER:-portfolio}
+      DB_PASS: ${DB_PASS:-portfolio}
+      APP_ENV: local
+      SESSION_SECRET: ${SESSION_SECRET:-dev-only-insecure-secret}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_ENCRYPTION: ${SMTP_ENCRYPTION:-tls}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASS: ${SMTP_PASS:-}
+      SMTP_FROM_ADDRESS: ${SMTP_FROM_ADDRESS:-noreply@ecommlab.in}
+      SMTP_FROM_NAME: ${SMTP_FROM_NAME:-Ecomm Lab}
+      LEADS_TO_ADDRESS: ${LEADS_TO_ADDRESS:-}
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./api:/var/www/api
+      - api_vendor:/var/www/api/vendor
+
+  # One-off runner for api/migrations/migrate.php - not part of the default
+  # `docker compose up`. Run explicitly with:
+  #   docker compose run --rm migrate
+  migrate:
+    build:
+      context: ./api
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_NAME: ${DB_NAME:-portfolio}
+      DB_USER: ${DB_USER:-portfolio}
+      DB_PASS: ${DB_PASS:-portfolio}
+      APP_ENV: local
+    volumes:
+      - ./api:/var/www/api
+      - api_vendor:/var/www/api/vendor
+    entrypoint: ["php", "migrations/migrate.php"]
+    profiles:
+      - tools
+
+  web:
+    image: node:22-alpine
+    working_dir: /app
+    depends_on:
+      - api
+    environment:
+      VITE_API_PROXY_TARGET: http://api:8000
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./:/app
+      - web_node_modules:/app/node_modules
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+
+  adminer:
+    image: adminer:latest
+    restart: unless-stopped
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"
+
+volumes:
+  db_data:
+  api_vendor:
+  web_node_modules:

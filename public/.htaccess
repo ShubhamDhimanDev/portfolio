@@ -1,0 +1,26 @@
+# Apache config for the deployed React build root
+# (public_html/ - alongside the api/ directory, which has its own .htaccess).
+
+RewriteEngine On
+
+# Leave /api/ requests untouched - api/.htaccess handles that subtree
+# entirely on its own.
+RewriteRule ^api/ - [L]
+
+# Serve real files/directories as-is (JS/CSS bundles, favicon, etc.).
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Blog post detail pages go through the bot-aware PHP renderer (see
+# api/render/blog-post.php) - it decides itself whether to return
+# SEO/social-preview HTML or fall back to the plain SPA shell, based on
+# the User-Agent. Must come before the catch-all SPA fallback below.
+RewriteRule ^blog/([^/]+)/?$ api/render/blog-post.php?slug=$1 [QSA,L]
+
+# Dynamic sitemap (homepage + published blog posts) - see api/render/sitemap.php.
+RewriteRule ^sitemap\.xml$ api/render/sitemap.php [L]
+
+# Everything else falls back to the SPA shell; React Router handles the
+# route client-side.
+RewriteRule ^ index.html [L]
