@@ -1,4 +1,4 @@
-import { useEffect, useState, type MouseEvent } from "react";
+import { useEffect, useRef, useState, type MouseEvent } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-motion";
 import { Menu, X } from "lucide-react";
@@ -8,14 +8,17 @@ import { useActiveSection } from "@/hooks/useActiveSection";
 import { scrollToTarget } from "@/lib/lenis-instance";
 import { Button } from "@/components/ui/Button";
 
+const PILL_TRANSITION = { type: "tween", ease: [0.16, 1, 0.3, 1], duration: 0.25 } as const;
+
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const { scrollY } = useScroll();
   const location = useLocation();
   const navigate = useNavigate();
-  const activeId = useActiveSection(SECTION_IDS);
+  const activeId = useActiveSection(SECTION_IDS, location.pathname);
   const isHome = location.pathname === "/";
+  const pendingScrollRef = useRef<string | null>(null);
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     setScrolled(latest > 32);
@@ -23,10 +26,27 @@ export function Header() {
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
-    return () => {
-      document.body.style.overflow = "";
-    };
+    return () => { document.body.style.overflow = ""; };
   }, [mobileOpen]);
+
+  // After navigating back to home, fire the stored scroll target.
+  useEffect(() => {
+    console.log("[DEBUG] effect fired, isHome=", isHome, "pending=", pendingScrollRef.current);
+    if (isHome && pendingScrollRef.current) {
+      const target = pendingScrollRef.current;
+      pendingScrollRef.current = null;
+      console.log("[DEBUG] scheduling scrollToTarget", target);
+      const timer = setTimeout(() => {
+        const el = document.getElementById(target.replace("#", ""));
+        console.log("[DEBUG] firing scrollToTarget", target, "elTop=", el?.getBoundingClientRect().top, "scrollY=", window.scrollY);
+        scrollToTarget(target);
+        setTimeout(() => {
+          console.log("[DEBUG] 500ms after scrollToTarget call, scrollY=", window.scrollY);
+        }, 500);
+      }, 80);
+      return () => clearTimeout(timer);
+    }
+  }, [isHome]);
 
   function handleNavClick(event: MouseEvent<HTMLAnchorElement>, href: string) {
     setMobileOpen(false);
@@ -35,7 +55,9 @@ export function Header() {
       scrollToTarget(href);
     } else {
       event.preventDefault();
-      navigate("/" + href);
+      pendingScrollRef.current = href;
+      console.log("[DEBUG] click stored pending=", href, "navigating to /");
+      navigate("/");
     }
   }
 
@@ -84,7 +106,7 @@ export function Header() {
                       <motion.span
                         layoutId="nav-active-pill"
                         className="absolute inset-0 rounded-full bg-foreground"
-                        transition={{ type: "spring", stiffness: 400, damping: 32 }}
+                        transition={PILL_TRANSITION}
                       />
                     )}
                     <span className="relative">{link.label}</span>
@@ -108,7 +130,7 @@ export function Header() {
                     <motion.span
                       layoutId="nav-active-pill"
                       className="absolute inset-0 rounded-full bg-foreground"
-                      transition={{ type: "spring", stiffness: 400, damping: 32 }}
+                      transition={PILL_TRANSITION}
                     />
                   )}
                   <span className="relative">{link.label}</span>

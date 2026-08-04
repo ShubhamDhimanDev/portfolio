@@ -19,13 +19,26 @@ export function FeaturedProjectCard({ project }: { project: Project }) {
     >
       <div
         aria-hidden
-        className="pointer-events-none absolute -top-40 left-1/2 h-80 w-[36rem] -translate-x-1/2 rounded-full bg-accent/10 blur-[120px]"
+        className="pointer-events-none absolute -top-40 left-1/2 h-80 w-xl -translate-x-1/2 rounded-full bg-accent/10 blur-[120px]"
       />
 
       <div className="relative grid grid-cols-1 gap-10 p-6 md:grid-cols-2 md:gap-12 md:p-10">
         <motion.div variants={fadeUp}>
           <TiltCard tiltStrength={5}>
-            <ProjectPreview label="sessionora.app" className="min-h-[320px] md:min-h-[420px]" />
+            {project.screenshot ? (
+              <div className="relative w-full overflow-hidden rounded-2xl border border-border shadow-lg aspect-16/10">
+                <img
+                  src={project.screenshot}
+                  alt={`${project.name} screenshot`}
+                  className="absolute inset-0 h-full w-full object-cover object-top"
+                />
+              </div>
+            ) : (
+              <ProjectPreview
+                label={project.liveUrl && project.liveUrl !== "#" ? project.liveUrl.replace("https://", "") : `${project.slug}.app`}
+                className="min-h-80 md:min-h-105"
+              />
+            )}
           </TiltCard>
         </motion.div>
 

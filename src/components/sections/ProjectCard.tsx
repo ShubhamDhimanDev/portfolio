@@ -13,7 +13,17 @@ export function ProjectCard({ project }: { project: Project }) {
       className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-surface transition-colors duration-300 hover:border-border-strong"
     >
       <div className="p-3">
-        <ProjectPreview label={`${project.name.toLowerCase().replace(/\s+/g, "-")}.app`} />
+        {project.screenshot ? (
+          <div className="overflow-hidden rounded-xl border border-border">
+            <img
+              src={project.screenshot}
+              alt={`${project.name} screenshot`}
+              className="h-55 w-full object-cover object-top"
+            />
+          </div>
+        ) : (
+          <ProjectPreview label={`${project.name.toLowerCase().replace(/\s+/g, "-")}.app`} />
+        )}
       </div>
 
       <div className="flex flex-1 flex-col p-6 pt-2">

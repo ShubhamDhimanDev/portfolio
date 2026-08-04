@@ -31,3 +31,5 @@ api/storage/*
 api/uploads/*
 !api/uploads/.gitkeep
 api/composer.phar
+
+testing

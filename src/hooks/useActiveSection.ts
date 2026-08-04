@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
-export function useActiveSection(sectionIds: readonly string[]) {
-  const [activeId, setActiveId] = useState<string>(sectionIds[0] ?? "");
+export function useActiveSection(sectionIds: readonly string[], pathname: string) {
+  const [activeId, setActiveId] = useState<string>("");
 
   useEffect(() => {
     const elements = sectionIds
@@ -25,7 +25,7 @@ export function useActiveSection(sectionIds: readonly string[]) {
 
     elements.forEach((el) => observer.observe(el));
     return () => observer.disconnect();
-  }, [sectionIds]);
+  }, [sectionIds, pathname]);
 
   return activeId;
 }

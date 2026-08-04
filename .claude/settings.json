@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(Get-ChildItem -Path \"d:\\\\Projects\\\\portfolio\" -Depth 1 | Where-Object { $_.Name -ne '.git' } | Select-Object -Property Name, PSIsContainer | Format-Table -AutoSize)",
+      "Read(//c/Users/InsAne/**)",
+      "mcp__playwright__browser_resize",
+      "mcp__playwright__browser_navigate",
+      "mcp__playwright__browser_take_screenshot"
+    ]
+  }
+}

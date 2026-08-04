@@ -8,7 +8,8 @@ export interface Project {
   technologies: string[];
   liveUrl?: string;
   githubUrl?: string;
+  screenshot?: string;
   featured?: boolean;
-  status: "Live" | "In Development" | "Archived";
+  status: "Live" | "In Development" | "Archived" | "In Progress";
   year: string;
 }
