@@ -94,15 +94,15 @@ export function AdminPostsListPage() {
         </Button>
       </div>
 
-      <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
-        <div className="flex gap-1 rounded-full border border-border bg-surface p-1">
+      <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">
+        <div className="flex gap-1 overflow-x-auto rounded-full border border-border bg-surface p-1">
           {STATUS_TABS.map((tab) => (
             <button
               key={tab.value}
               type="button"
               onClick={() => setStatus(tab.value)}
               className={cn(
-                "rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors",
+                "shrink-0 rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors",
                 status === tab.value ? "bg-foreground text-background" : "text-muted hover:text-foreground",
               )}
             >
@@ -118,14 +118,70 @@ export function AdminPostsListPage() {
             placeholder="Search titles..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-64 rounded-full border border-border bg-surface py-2 pl-10 pr-4 text-sm text-foreground placeholder:text-subtle focus:border-accent-soft/60 focus:outline-none"
+            className="w-full rounded-full border border-border bg-surface py-2 pl-10 pr-4 text-sm text-foreground placeholder:text-subtle focus:border-accent-soft/60 focus:outline-none sm:w-64"
           />
         </div>
       </div>
 
       {error && <p className="mt-4 text-sm text-red-400">{error}</p>}
 
-      <div className="mt-6 overflow-hidden rounded-2xl border border-border">
+      {/* Mobile card list */}
+      <div className="mt-6 flex flex-col gap-3 sm:hidden">
+        {isLoading && <p className="py-10 text-center text-muted">Loading...</p>}
+        {!isLoading && posts.length === 0 && <p className="py-10 text-center text-muted">No posts found.</p>}
+        {!isLoading &&
+          posts.map((post) => (
+            <div key={post.id} className="rounded-2xl border border-border bg-surface p-4">
+              <div className="flex items-start justify-between gap-3">
+                <p className="font-medium text-foreground">{post.title}</p>
+                <StatusBadge status={post.status} />
+              </div>
+              <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-subtle">
+                <span>{post.categories.map((c) => c.name).join(", ") || "-"}</span>
+                <span className="font-mono">{formatBlogDate(post.updated_at)}</span>
+              </div>
+              <div className="mt-3 flex items-center gap-1 border-t border-border pt-3">
+                <Link
+                  to={`/admin/posts/${post.id}/edit`}
+                  className="flex size-9 items-center justify-center rounded-lg text-muted transition-colors hover:bg-surface-2 hover:text-foreground"
+                  aria-label="Edit"
+                >
+                  <Pencil className="size-4" />
+                </Link>
+                <button
+                  type="button"
+                  disabled={busyId === post.id}
+                  onClick={() => handleToggle(post)}
+                  className="flex size-9 items-center justify-center rounded-lg text-muted transition-colors hover:bg-surface-2 hover:text-foreground disabled:opacity-40"
+                  aria-label={post.status === "published" ? "Unpublish" : "Publish"}
+                >
+                  {post.status === "published" ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+                </button>
+                <button
+                  type="button"
+                  disabled={busyId === post.id || post.status === "archived"}
+                  onClick={() => handleArchive(post)}
+                  className="flex size-9 items-center justify-center rounded-lg text-muted transition-colors hover:bg-surface-2 hover:text-foreground disabled:opacity-40"
+                  aria-label="Archive"
+                >
+                  <Archive className="size-4" />
+                </button>
+                <button
+                  type="button"
+                  disabled={busyId === post.id}
+                  onClick={() => setPendingDelete(post)}
+                  className="ml-auto flex size-9 items-center justify-center rounded-lg text-muted transition-colors hover:bg-red-500/10 hover:text-red-400 disabled:opacity-40"
+                  aria-label="Delete"
+                >
+                  <Trash2 className="size-4" />
+                </button>
+              </div>
+            </div>
+          ))}
+      </div>
+
+      {/* Desktop table */}
+      <div className="mt-6 hidden overflow-x-auto rounded-2xl border border-border sm:block">
         <table className="w-full text-left text-sm">
           <thead>
             <tr className="border-b border-border bg-surface text-xs uppercase tracking-wide text-subtle">

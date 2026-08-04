@@ -58,14 +58,14 @@ export function AdminMediaPage() {
         <input ref={fileInputRef} type="file" className="hidden" onChange={handleFileChange} />
       </div>
 
-      <div className="mt-6 flex gap-1 rounded-full border border-border bg-surface p-1 w-fit">
+      <div className="mt-6 flex w-full gap-1 overflow-x-auto rounded-full border border-border bg-surface p-1 sm:w-fit">
         {TYPE_TABS.map((tab) => (
           <button
             key={tab.label}
             type="button"
             onClick={() => setType(tab.value)}
             className={cn(
-              "rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors",
+              "shrink-0 rounded-full px-3.5 py-1.5 text-sm font-medium transition-colors",
               type === tab.value ? "bg-foreground text-background" : "text-muted hover:text-foreground",
             )}
           >

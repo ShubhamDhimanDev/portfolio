@@ -31,18 +31,11 @@ export function Header() {
 
   // After navigating back to home, fire the stored scroll target.
   useEffect(() => {
-    console.log("[DEBUG] effect fired, isHome=", isHome, "pending=", pendingScrollRef.current);
     if (isHome && pendingScrollRef.current) {
       const target = pendingScrollRef.current;
       pendingScrollRef.current = null;
-      console.log("[DEBUG] scheduling scrollToTarget", target);
       const timer = setTimeout(() => {
-        const el = document.getElementById(target.replace("#", ""));
-        console.log("[DEBUG] firing scrollToTarget", target, "elTop=", el?.getBoundingClientRect().top, "scrollY=", window.scrollY);
         scrollToTarget(target);
-        setTimeout(() => {
-          console.log("[DEBUG] 500ms after scrollToTarget call, scrollY=", window.scrollY);
-        }, 500);
       }, 80);
       return () => clearTimeout(timer);
     }
@@ -56,7 +49,6 @@ export function Header() {
     } else {
       event.preventDefault();
       pendingScrollRef.current = href;
-      console.log("[DEBUG] click stored pending=", href, "navigating to /");
       navigate("/");
     }
   }

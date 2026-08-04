@@ -132,7 +132,44 @@ export function AdminCategoriesPage() {
         </div>
       )}
 
-      <div className="mt-6 overflow-hidden rounded-2xl border border-border">
+      {/* Mobile card list */}
+      <div className="mt-6 flex flex-col gap-3 sm:hidden">
+        {isLoading && <p className="py-10 text-center text-muted">Loading...</p>}
+        {!isLoading && categories.length === 0 && <p className="py-10 text-center text-muted">No categories yet.</p>}
+        {!isLoading &&
+          categories.map((category) => (
+            <div key={category.id} className="rounded-2xl border border-border bg-surface p-4">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="font-medium text-foreground">{category.name}</p>
+                  <p className="mt-0.5 font-mono text-xs text-muted">{category.slug}</p>
+                </div>
+                <span className="shrink-0 text-xs text-subtle">{category.post_count} posts</span>
+              </div>
+              <div className="mt-3 flex items-center gap-1 border-t border-border pt-3">
+                <button
+                  type="button"
+                  onClick={() => startEdit(category)}
+                  className="flex size-9 items-center justify-center rounded-lg text-muted transition-colors hover:bg-surface-2 hover:text-foreground"
+                  aria-label="Edit"
+                >
+                  <Pencil className="size-4" />
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setPendingDelete(category)}
+                  className="flex size-9 items-center justify-center rounded-lg text-muted transition-colors hover:bg-red-500/10 hover:text-red-400"
+                  aria-label="Delete"
+                >
+                  <Trash2 className="size-4" />
+                </button>
+              </div>
+            </div>
+          ))}
+      </div>
+
+      {/* Desktop table */}
+      <div className="mt-6 hidden overflow-x-auto rounded-2xl border border-border sm:block">
         <table className="w-full text-left text-sm">
           <thead>
             <tr className="border-b border-border bg-surface text-xs uppercase tracking-wide text-subtle">
