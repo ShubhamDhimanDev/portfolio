@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet, useLocation } from "react-router";
 import { useLenis } from "@/hooks/useLenis";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
@@ -31,3 +31,5 @@ export function RootLayout() {
     </div>
   );
 }
+
+export default RootLayout;

@@ -164,3 +164,5 @@ export function AdminLeadsPage() {
     </div>
   );
 }
+
+export default AdminLeadsPage;

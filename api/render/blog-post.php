@@ -141,7 +141,7 @@ function h(?string $value): string
 function render_not_found_html(): string
 {
     return '<!doctype html><html lang="en"><head><meta charset="UTF-8">'
-        . '<title>Post not found - EcommLab Blog</title>'
+        . '<title>Post not found - Shubham Dhiman</title>'
         . '<meta name="robots" content="noindex, follow"></head>'
         . '<body><h1>Post not found</h1><p>This post does not exist or is not published.</p></body></html>';
 }
@@ -155,12 +155,12 @@ function render_post_html(array $post): string
 
     $siteUrl = current_site_url();
     $canonicalUrl = $seo['canonical_url'] ?? ($siteUrl . '/blog/' . $post['slug']);
-    $metaTitle = $seo['meta_title'] ?? ($post['title'] . ' - EcommLab Blog');
+    $metaTitle = $seo['meta_title'] ?? ($post['title'] . ' - Shubham Dhiman');
     $metaDescription = $seo['meta_description'] ?? ($seo['ai_summary'] ?? ($post['excerpt'] ?? ''));
     $robots = $seo['robots'] ?? 'index, follow';
     $ogImageUrl = $ogImageMedia['url'] ?? ($coverMedia['url'] ?? null);
     $twitterImageUrl = $twitterImageMedia['url'] ?? $ogImageUrl;
-    $authorName = $post['author_name'] ?: 'EcommLab';
+    $authorName = $post['author_name'] ?: 'Shubham Dhiman';
     $authorUrl = $post['author_linkedin_url'] ?: null;
 
     $articleJsonLd = array_filter([
@@ -175,8 +175,8 @@ function render_post_html(array $post): string
             'url' => $authorUrl,
         ], static fn($v) => $v !== null),
         'publisher' => [
-            '@type' => 'Organization',
-            'name' => 'EcommLab',
+            '@type' => 'Person',
+            'name' => 'Shubham Dhiman',
             'logo' => ['@type' => 'ImageObject', 'url' => $siteUrl . '/og-image.png'],
         ],
         'datePublished' => $post['published_at'] ?? $post['created_at'],
@@ -219,7 +219,7 @@ function render_post_html(array $post): string
 <meta property="og:title" content="<?= h($seo['og_title'] ?? $post['title']) ?>">
 <?php $ogDescription = $seo['og_description'] ?? $metaDescription; if ($ogDescription !== ''): ?><meta property="og:description" content="<?= h($ogDescription) ?>">
 <?php endif; ?>
-<meta property="og:site_name" content="EcommLab">
+<meta property="og:site_name" content="Shubham Dhiman">
 <meta property="og:url" content="<?= h($canonicalUrl) ?>">
 <?php if ($ogImageUrl): ?><meta property="og:image" content="<?= h($siteUrl . $ogImageUrl) ?>">
 <?php endif; ?>

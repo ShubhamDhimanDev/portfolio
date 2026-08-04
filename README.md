@@ -67,8 +67,8 @@ More detail (architecture write-ups included) on **[insanedev.in](https://insane
 ### GitHub, in numbers
 
 <p align="center">
-  <img height="165" src="https://github-readme-stats.vercel.app/api?username=ShubhamDhimanDev&show_icons=true&theme=default&hide_border=true&count_private=true" alt="GitHub stats">
-  <img height="165" src="https://github-readme-streak-stats.herokuapp.com/?user=ShubhamDhimanDev&hide_border=true" alt="GitHub streak">
+  <img height="165" src="https://github-readme-stats.vercel.app/api?username=ShubhamDhimanDev&show_icons=true&theme=default&hide_border=true" alt="GitHub stats">
+  <img height="165" src="https://streak-stats.demolab.com/?user=ShubhamDhimanDev&hide_border=true" alt="GitHub streak">
 </p>
 
 ---

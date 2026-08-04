@@ -174,3 +174,5 @@ export function AdminCommentsPage() {
     </div>
   );
 }
+
+export default AdminCommentsPage;

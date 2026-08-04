@@ -117,3 +117,5 @@ export function AdminMediaPage() {
     </div>
   );
 }
+
+export default AdminMediaPage;

@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router";
 import { ArrowLeft } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
@@ -36,3 +36,5 @@ export function NotFoundPage() {
     </section>
   );
 }
+
+export default NotFoundPage;

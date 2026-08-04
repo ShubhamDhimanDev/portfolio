@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { NavLink, Outlet, useLocation, useNavigate } from "react-router-dom";
+import { NavLink, Outlet, useLocation, useNavigate } from "react-router";
 import { FileText, FolderOpen, Image, Inbox, LogOut, Menu, MessageSquare, X } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { cn } from "@/lib/utils";
@@ -129,3 +129,5 @@ export function AdminLayout() {
     </div>
   );
 }
+
+export default AdminLayout;

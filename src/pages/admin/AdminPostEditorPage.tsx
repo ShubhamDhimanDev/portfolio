@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router";
 import { ArrowLeft, Save } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { MediaPickerField } from "@/components/admin/MediaPickerField";
@@ -339,3 +339,5 @@ export function AdminPostEditorPage() {
     </div>
   );
 }
+
+export default AdminPostEditorPage;

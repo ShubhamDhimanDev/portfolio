@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router";
 import { motion } from "framer-motion";
 import { ArrowLeft, Layers, Database, TrendingUp, CircleCheckBig } from "lucide-react";
 import { Container } from "@/components/ui/Container";
@@ -10,6 +10,19 @@ import { GridBackground } from "@/components/ui/GridBackground";
 import { baseTransition, fadeUp, staggerContainer } from "@/lib/motion";
 import { CASE_STUDIES } from "@/data/case-studies";
 import { NotFoundPage } from "@/pages/NotFoundPage";
+import type { Route } from "./+types/CaseStudyDetailPage";
+
+export function meta({ params }: Route.MetaArgs) {
+  const caseStudy = CASE_STUDIES.find((item) => item.slug === params.slug);
+  if (!caseStudy) return [{ title: "Case Study - Shubham Dhiman" }];
+  const title = `${caseStudy.title} - Shubham Dhiman`;
+  return [
+    { title },
+    { name: "description", content: caseStudy.summary },
+    { property: "og:title", content: title },
+    { property: "og:description", content: caseStudy.summary },
+  ];
+}
 
 export function CaseStudyDetailPage() {
   const { slug } = useParams<{ slug: string }>();
@@ -192,3 +205,5 @@ export function CaseStudyDetailPage() {
     </article>
   );
 }
+
+export default CaseStudyDetailPage;

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router";
 import { Archive, Eye, EyeOff, Pencil, Plus, Search, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { StatusBadge } from "@/components/admin/StatusBadge";
@@ -280,3 +280,5 @@ export function AdminPostsListPage() {
     </div>
   );
 }
+
+export default AdminPostsListPage;

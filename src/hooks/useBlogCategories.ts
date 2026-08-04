@@ -1,12 +1,15 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { fetchBlogCategories } from "@/lib/blog-api";
 import type { BlogCategory } from "@/types/blog.types";
 
-export function useBlogCategories() {
-  const [categories, setCategories] = useState<BlogCategory[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+export function useBlogCategories(initialData?: BlogCategory[]) {
+  const [categories, setCategories] = useState<BlogCategory[]>(initialData ?? []);
+  const [isLoading, setIsLoading] = useState(!initialData);
+  const hadInitialData = useRef(initialData !== undefined);
 
   useEffect(() => {
+    if (hadInitialData.current) return;
+
     const controller = new AbortController();
 
     fetchBlogCategories(controller.signal)
