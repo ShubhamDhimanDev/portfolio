@@ -45,7 +45,7 @@ export function BlogListPage() {
     page,
     perPage: 9,
     category: category ?? undefined,
-    initialData: preloaded ? { posts: preloaded.posts, meta: preloaded.meta } : undefined,
+    initialData: preloaded?.meta ? { posts: preloaded.posts, meta: preloaded.meta } : undefined,
   });
 
   function updateParams(next: { page?: number; category?: string | null }) {

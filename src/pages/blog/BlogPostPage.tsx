@@ -140,7 +140,7 @@ export function BlogPostPage() {
       </section>
 
       {post.cover_media?.url && (
-        <Reveal className="mb-4">
+        <Reveal immediate className="mb-4">
           <Container className="max-w-3xl">
             <img
               src={post.cover_media.url}
@@ -153,7 +153,7 @@ export function BlogPostPage() {
 
       <section className="py-12">
         <Container className="max-w-3xl">
-          <Reveal>
+          <Reveal immediate>
             <BlogContentRenderer blocks={post.blocks} />
           </Reveal>
 
