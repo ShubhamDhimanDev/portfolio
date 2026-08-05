@@ -263,12 +263,12 @@ function render_post_html(array $post): string
 
 /**
  * Plain semantic HTML for the content blocks - mirrors BlockRenderer in
- * BlogContentRenderer.tsx. `html`-bearing fields (paragraph/div/list items)
- * were already sanitized to an inline-tag allowlist at write time (see
- * sanitize_inline_html() in lib/validate.php); the `html` block type was
- * sanitized more loosely (scripts/event-handlers stripped, see
- * sanitize_raw_html()) since it's meant to hold arbitrary markup. Both are
- * safe to echo verbatim here, same as the React renderer's dangerouslySetInnerHTML does.
+ * BlogContentRenderer.tsx. `html`-bearing fields were already sanitized at
+ * write time: list items stay on the inline-tag allowlist (see
+ * sanitize_inline_html() in lib/validate.php); paragraph/div/html blocks
+ * allow arbitrary structural markup with scripts/event-handlers stripped
+ * (see sanitize_raw_html()). Both are safe to echo verbatim here, same as
+ * the React renderer's dangerouslySetInnerHTML does.
  *
  * @param array<int,array{block_type:string,block_data:array<string,mixed>}> $blocks
  */

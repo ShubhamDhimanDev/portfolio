@@ -641,7 +641,7 @@ function normalize_block_heading(array $d, int $i): array
 
 function normalize_block_paragraph(array $d, int $i): array
 {
-    $html = sanitize_inline_html((string) ($d['html'] ?? ''));
+    $html = sanitize_raw_html((string) ($d['html'] ?? ''));
     if ($html === '') {
         throw new BlogValidationException("Block #{$i} (paragraph): html is required.");
     }
@@ -651,7 +651,7 @@ function normalize_block_paragraph(array $d, int $i): array
 function normalize_block_div(array $d): array
 {
     $style = in_array($d['style'] ?? '', ['default', 'muted', 'accent', 'bordered'], true) ? $d['style'] : 'default';
-    $html = sanitize_inline_html((string) ($d['html'] ?? ''));
+    $html = sanitize_raw_html((string) ($d['html'] ?? ''));
     return ['style' => $style, 'html' => $html];
 }
 

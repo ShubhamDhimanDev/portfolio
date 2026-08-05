@@ -81,7 +81,7 @@ export function CommentForm({ slug, onSubmitted }: CommentFormProps) {
       )}
 
       <div>
-        <Button type="submit" disabled={isSubmitting} icon={Send}>
+        <Button type="submit" disabled={isSubmitting} icon={Send} className="w-full">
           {isSubmitting ? "Sending..." : "Post comment"}
         </Button>
       </div>

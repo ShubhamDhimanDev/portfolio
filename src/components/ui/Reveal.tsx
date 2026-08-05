@@ -7,14 +7,18 @@ interface RevealProps {
   variants?: Variants;
   delay?: number;
   className?: string;
+  /** Fade in on mount instead of waiting for scroll-into-view. Use for content
+   * that starts near/below the fold but should be visible immediately (e.g.
+   * directly under a tall hero), as opposed to sections meant to reveal as
+   * the user scrolls down to them. */
+  immediate?: boolean;
 }
 
-export function Reveal({ children, variants = fadeUp, delay = 0, className }: RevealProps) {
+export function Reveal({ children, variants = fadeUp, delay = 0, className, immediate = false }: RevealProps) {
   return (
     <motion.div
       initial="hidden"
-      whileInView="visible"
-      viewport={viewportOnce}
+      {...(immediate ? { animate: "visible" } : { whileInView: "visible", viewport: viewportOnce })}
       variants={variants}
       transition={{ ...baseTransition, delay }}
       className={className}

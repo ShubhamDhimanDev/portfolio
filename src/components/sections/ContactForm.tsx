@@ -88,7 +88,7 @@ export function ContactForm() {
       )}
 
       <div className="flex flex-col gap-3">
-        <Button type="submit" disabled={isSubmitting} icon={Send} className="w-fit">
+        <Button type="submit" disabled={isSubmitting} icon={Send}>
           {isSubmitting ? "Sending..." : "Send message"}
         </Button>
         {RECAPTCHA_SITE_KEY && (

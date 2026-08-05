@@ -134,10 +134,12 @@ function clean_multiline_text($value, int $maxLength = 5000): string
 }
 
 /**
- * Sanitize inline HTML for paragraph/list/div block content: only a small
- * allowlist of inline marks survive (bold/italic/underline/inline links/line
- * breaks). Everything else - scripts, event handlers, block-level tags - is
- * stripped, per docs/blog-section.md §4.3 ("Sanitized inline HTML only").
+ * Sanitize inline HTML for list item content: only a small allowlist of
+ * inline marks survive (bold/italic/underline/inline links/line breaks).
+ * Everything else - scripts, event handlers, block-level tags - is stripped.
+ * List items are short per-item text, not full documents, so structural
+ * markup doesn't apply here the way it does for paragraph/div/html blocks
+ * (see sanitize_raw_html()).
  */
 function sanitize_inline_html(string $html): string
 {

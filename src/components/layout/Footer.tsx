@@ -21,7 +21,7 @@ export function Footer() {
 
           <button
             type="button"
-            onClick={() => scrollToTarget("#hero")}
+            onClick={() => scrollToTarget(0)}
             className="group flex items-center gap-2 rounded-full border border-border-strong px-4 py-2 text-sm text-muted transition-colors hover:border-accent-soft/50 hover:text-foreground"
           >
             Back to top
