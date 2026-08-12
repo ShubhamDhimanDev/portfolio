@@ -23,7 +23,7 @@ export function Hero() {
           animate="visible"
           className="max-w-4xl"
         >
-          {/* <motion.div
+          <motion.div
             variants={fadeUp}
             transition={baseTransition}
             className="mb-8 inline-flex items-center gap-2 rounded-full border border-border-strong bg-surface/60 px-4 py-1.5 backdrop-blur-sm"
@@ -35,7 +35,7 @@ export function Hero() {
             <span className="font-mono text-xs tracking-wide text-muted">
               Available for select engagements
             </span>
-          </motion.div> */}
+          </motion.div>
 
           <motion.h1
             variants={fadeUp}
