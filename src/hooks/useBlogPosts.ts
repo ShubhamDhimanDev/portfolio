@@ -31,12 +31,15 @@ export function useBlogPosts({
   const hadInitialData = useRef(initialData !== undefined);
 
   useEffect(() => {
-    // Route loader already fetched page 1 with no category filter - skip the
-    // redundant client fetch for that exact initial state.
-    if (isInitialRender.current) {
-      isInitialRender.current = false;
-      if (hadInitialData.current && page === 1 && !category) return;
-    }
+    // The "blog" route is prerendered at build time (it has no dynamic params),
+    // so initialData is a snapshot frozen at the last build - not live data.
+    // On the very first render for that default state (page 1, no category) we
+    // still revalidate in the background, but skip flipping isLoading so the
+    // stale-but-non-empty prerendered list stays visible instead of flashing
+    // a skeleton while the fresh data loads.
+    const isSilentRevalidation =
+      isInitialRender.current && hadInitialData.current && page === 1 && !category;
+    isInitialRender.current = false;
 
     const controller = new AbortController();
 
@@ -44,7 +47,7 @@ export function useBlogPosts({
     // synchronous statement in the effect body (react-hooks/set-state-in-effect).
     Promise.resolve().then(() => {
       if (controller.signal.aborted) return;
-      setIsLoading(true);
+      if (!isSilentRevalidation) setIsLoading(true);
       setError(null);
     });
 
