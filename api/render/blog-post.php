@@ -53,13 +53,18 @@ exit;
 function serve_spa_shell(): never
 {
     // api/render/blog-post.php -> api/render -> api -> web root, where the
-    // built dist/index.html is deployed alongside api/ (see docs/api-backend.md §3).
-    $indexPath = dirname(__DIR__, 2) . '/index.html';
-    if (is_file($indexPath)) {
-        readfile($indexPath);
+    // built dist/ output is deployed alongside api/ (see docs/api-backend.md §3).
+    // __spa-fallback.html is react-router's generic minimal shell for
+    // non-prerendered routes (this one - /blog/:slug - has a clientLoader +
+    // HydrateFallback, see BlogPostPage.tsx) - unlike index.html, it carries
+    // no baked-in homepage DOM/meta, so there's no hydration mismatch or
+    // wrong content exposed to non-JS readers of this URL.
+    $shellPath = dirname(__DIR__, 2) . '/__spa-fallback.html';
+    if (is_file($shellPath)) {
+        readfile($shellPath);
     } else {
         // Shouldn't happen in production; safe fallback for any environment
-        // where index.html isn't deployed next to api/.
+        // where the built shell isn't deployed next to api/.
         http_response_code(302);
         header('Location: /');
     }

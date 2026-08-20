@@ -21,6 +21,8 @@ RewriteRule ^blog/([^/]+)/?$ api/render/blog-post.php?slug=$1 [QSA,L]
 # Dynamic sitemap (homepage + published blog posts) - see api/render/sitemap.php.
 RewriteRule ^sitemap\.xml$ api/render/sitemap.php [L]
 
-# Everything else falls back to the SPA shell; React Router handles the
-# route client-side.
-RewriteRule ^ index.html [L]
+# Everything else falls back to the generic SPA shell (react-router's
+# purpose-built minimal shell for non-prerendered routes - not index.html,
+# which is the homepage's own prerendered output and would mismatch-hydrate
+# for any other path); React Router handles the route client-side from here.
+RewriteRule ^ __spa-fallback.html [L]

@@ -31,12 +31,13 @@ export function useBlogPosts({
   const hadInitialData = useRef(initialData !== undefined);
 
   useEffect(() => {
-    // Route loader already fetched page 1 with no category filter - skip the
-    // redundant client fetch for that exact initial state.
-    if (isInitialRender.current) {
-      isInitialRender.current = false;
-      if (hadInitialData.current && page === 1 && !category) return;
-    }
+    // Route loader data comes from a build-time prerendered snapshot (blog list
+    // is a static route), which goes stale the moment a new post is published.
+    // For that exact initial state, revalidate quietly in the background instead
+    // of skipping the fetch or flashing the loading skeleton over good data.
+    const isQuietRevalidation =
+      isInitialRender.current && hadInitialData.current && page === 1 && !category;
+    isInitialRender.current = false;
 
     const controller = new AbortController();
 
@@ -44,7 +45,7 @@ export function useBlogPosts({
     // synchronous statement in the effect body (react-hooks/set-state-in-effect).
     Promise.resolve().then(() => {
       if (controller.signal.aborted) return;
-      setIsLoading(true);
+      if (!isQuietRevalidation) setIsLoading(true);
       setError(null);
     });
 
@@ -56,7 +57,11 @@ export function useBlogPosts({
       })
       .catch((err: unknown) => {
         if (controller.signal.aborted) return;
-        setError(err instanceof ApiError ? err.message : "Could not load posts.");
+        // A failed background revalidation shouldn't clobber the still-valid
+        // prerendered posts already on screen with an error state.
+        if (!isQuietRevalidation) {
+          setError(err instanceof ApiError ? err.message : "Could not load posts.");
+        }
       })
       .finally(() => {
         if (!controller.signal.aborted) setIsLoading(false);

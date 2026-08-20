@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
-import { ArrowLeft, Save } from "lucide-react";
+import { ArrowLeft, ChevronDown, Save } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { MediaPickerField } from "@/components/admin/MediaPickerField";
 import { CategoryMultiSelect } from "@/components/admin/CategoryMultiSelect";
@@ -10,6 +10,7 @@ import { SeoFieldsEditor } from "@/components/admin/SeoFieldsEditor";
 import { useAdminCategories } from "@/hooks/useAdminCategories";
 import { adminCreatePost, adminFetchPost, adminUpdatePost } from "@/lib/admin-api";
 import { ApiError } from "@/lib/api-client";
+import { cn } from "@/lib/utils";
 import type { EditableBlock } from "@/lib/block-editor";
 import type {
   AdminMedia,
@@ -66,6 +67,7 @@ export function AdminPostEditorPage() {
   const [faqs, setFaqs] = useState<BlogPostFormFaq[]>([]);
   const [categoryIds, setCategoryIds] = useState<number[]>([]);
   const [seo, setSeo] = useState<SeoFormFields>(EMPTY_SEO);
+  const [contentOpen, setContentOpen] = useState(true);
   const [ogImage, setOgImage] = useState<MediaPreview | null>(null);
   const [twitterImage, setTwitterImage] = useState<MediaPreview | null>(null);
 
@@ -245,9 +247,21 @@ export function AdminPostEditorPage() {
             </div>
           </div>
 
-          <div>
-            <h2 className="mb-4 text-sm font-medium text-foreground">Content</h2>
-            <BlockEditor blocks={blocks} onChange={setBlocks} />
+          <div className="rounded-2xl border border-border bg-surface">
+            <button
+              type="button"
+              onClick={() => setContentOpen((v) => !v)}
+              className="flex w-full items-center justify-between px-5 py-4"
+            >
+              <span className="text-sm font-medium text-foreground">Content</span>
+              <ChevronDown className={cn("size-4 text-muted transition-transform", contentOpen && "rotate-180")} />
+            </button>
+
+            {contentOpen && (
+              <div className="border-t border-border p-5">
+                <BlockEditor blocks={blocks} onChange={setBlocks} />
+              </div>
+            )}
           </div>
 
           <div>
