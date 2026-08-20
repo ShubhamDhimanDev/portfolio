@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { useNavigate, useParams } from "react-router";
+import { useNavigate, useParams, useLoaderData } from "react-router";
 import { motion } from "framer-motion";
 import { ArrowLeft, Clock } from "lucide-react";
 import { LinkedinIcon } from "@/components/icons/BrandIcons";
@@ -13,13 +13,87 @@ import { CommentList } from "@/components/blog/CommentList";
 import { CommentForm } from "@/components/blog/CommentForm";
 import { useBlogPost } from "@/hooks/useBlogPost";
 import { baseTransition, fadeUp, staggerContainer } from "@/lib/motion";
-import { estimateReadingMinutes, formatBlogDate } from "@/lib/blog-api";
+import { estimateReadingMinutes, formatBlogDate, fetchBlogPost } from "@/lib/blog-api";
 import { NotFoundPage } from "@/pages/NotFoundPage";
+import type { Route } from "./+types/BlogPostPage";
+
+const SITE_URL = "https://insanedev.in";
+
+// clientLoader (not loader) because this route has a dynamic slug and is
+// never in the prerendered path list - ssr:false forbids `loader` on routes
+// that aren't statically prerendered. Runs client-side on both the hard load
+// and the SPA transition into this route, so real browsers - not just the
+// bot-only PHP renderer in api/render/blog-post.php - get the post's own SEO
+// fields via meta() below.
+export async function clientLoader({ params }: Route.ClientLoaderArgs) {
+  if (!params.slug) return { post: null };
+  try {
+    const res = await fetchBlogPost(params.slug);
+    return { post: res.data };
+  } catch {
+    // Not-found or a transient failure both fall through to the component,
+    // which already knows how to show a 404 / retry state.
+    return { post: null };
+  }
+}
+
+export function meta({ data }: Route.MetaArgs) {
+  const post = data?.post;
+  if (!post) {
+    return [{ title: "Post not found - Shubham Dhiman" }, { name: "robots", content: "noindex, follow" }];
+  }
+
+  const seo = post.seo;
+  const canonicalUrl = seo?.canonical_url || `${SITE_URL}/blog/${post.slug}`;
+  const title = seo?.meta_title || `${post.title} - Shubham Dhiman`;
+  const description = seo?.meta_description || seo?.ai_summary || post.excerpt || "";
+  const ogDescription = seo?.og_description || description;
+  const twitterDescription = seo?.twitter_description || description;
+  const ogImageUrl = seo?.og_image?.url || post.cover_media?.url || null;
+  const twitterImageUrl = seo?.twitter_image?.url || ogImageUrl;
+
+  return [
+    { title },
+    description ? { name: "description", content: description } : null,
+    { name: "robots", content: seo?.robots || "index, follow" },
+    { tagName: "link", rel: "canonical", href: canonicalUrl },
+    { property: "og:type", content: seo?.og_type || "article" },
+    { property: "og:title", content: seo?.og_title || post.title },
+    ogDescription ? { property: "og:description", content: ogDescription } : null,
+    { property: "og:url", content: canonicalUrl },
+    ogImageUrl ? { property: "og:image", content: SITE_URL + ogImageUrl } : null,
+    { name: "twitter:card", content: seo?.twitter_card || "summary_large_image" },
+    { name: "twitter:title", content: seo?.twitter_title || post.title },
+    twitterDescription ? { name: "twitter:description", content: twitterDescription } : null,
+    twitterImageUrl ? { name: "twitter:image", content: SITE_URL + twitterImageUrl } : null,
+  ].filter((tag) => tag !== null);
+}
+
+function PostSkeleton() {
+  return (
+    <section className="py-28 pt-40 md:pt-48">
+      <Container className="max-w-3xl">
+        <div className="h-6 w-32 animate-pulse rounded-full bg-surface" />
+        <div className="mt-8 h-12 w-full animate-pulse rounded-xl bg-surface" />
+        <div className="mt-4 h-12 w-2/3 animate-pulse rounded-xl bg-surface" />
+        <div className="mt-10 aspect-video w-full animate-pulse rounded-2xl bg-surface" />
+      </Container>
+    </section>
+  );
+}
+
+// Shown on the initial hard load while the loader above is still in flight -
+// this route isn't prerendered (dynamic slug), so without this the first
+// paint would otherwise be blank until the fetch resolves.
+export function HydrateFallback() {
+  return <PostSkeleton />;
+}
 
 export function BlogPostPage() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
-  const { post, isLoading, error, notFound, refetch } = useBlogPost(slug);
+  const { post: preloadedPost } = useLoaderData<typeof clientLoader>();
+  const { post, isLoading, error, notFound, refetch } = useBlogPost(slug, preloadedPost);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -28,16 +102,7 @@ export function BlogPostPage() {
   if (notFound) return <NotFoundPage />;
 
   if (isLoading) {
-    return (
-      <section className="py-28 pt-40 md:pt-48">
-        <Container className="max-w-3xl">
-          <div className="h-6 w-32 animate-pulse rounded-full bg-surface" />
-          <div className="mt-8 h-12 w-full animate-pulse rounded-xl bg-surface" />
-          <div className="mt-4 h-12 w-2/3 animate-pulse rounded-xl bg-surface" />
-          <div className="mt-10 aspect-video w-full animate-pulse rounded-2xl bg-surface" />
-        </Container>
-      </section>
-    );
+    return <PostSkeleton />;
   }
 
   if (error || !post) {

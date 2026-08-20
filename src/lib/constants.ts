@@ -12,7 +12,7 @@ export const NAV_LINKS = [
   { label: "Case Studies", href: "#case-studies", type: "hash" },
   { label: "Experience", href: "#experience", type: "hash" },
   { label: "Contact", href: "#contact", type: "hash" },
-  { label: "Blog", href: "/blog", type: "route" },
+  { label: "Blogs", href: "/blog", type: "route" },
 ] as const;
 
 export const SECTION_IDS = [

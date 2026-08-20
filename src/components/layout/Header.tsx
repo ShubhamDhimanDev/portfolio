@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type MouseEvent } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type MouseEvent } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
 import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "framer-motion";
 import { Menu, X } from "lucide-react";
@@ -10,6 +10,10 @@ import { Button } from "@/components/ui/Button";
 
 const PILL_TRANSITION = { type: "tween", ease: [0.16, 1, 0.3, 1], duration: 0.25 } as const;
 
+const useIsomorphicLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
+
+type PillRect = { left: number; top: number; width: number; height: number; opacity: number };
+
 export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -19,10 +23,40 @@ export function Header() {
   const activeId = useActiveSection(SECTION_IDS, location.pathname);
   const isHome = location.pathname === "/";
   const pendingScrollRef = useRef<string | null>(null);
+  const navRef = useRef<HTMLElement>(null);
+  const linkRefs = useRef<Record<string, HTMLElement | null>>({});
+  const [pillRect, setPillRect] = useState<PillRect>({ left: 0, top: 0, width: 0, height: 0, opacity: 0 });
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     setScrolled(latest > 32);
   });
+
+  const activeHref = NAV_LINKS.find((link) => {
+    if (link.type === "route") return location.pathname.startsWith(link.href);
+    return isHome && activeId === link.href.replace("#", "");
+  })?.href;
+
+  useIsomorphicLayoutEffect(() => {
+    const activeEl = activeHref ? linkRefs.current[activeHref] : null;
+
+    function measure() {
+      if (!activeEl) {
+        setPillRect((prev) => ({ ...prev, opacity: 0 }));
+        return;
+      }
+      setPillRect({
+        left: activeEl.offsetLeft,
+        top: activeEl.offsetTop,
+        width: activeEl.offsetWidth,
+        height: activeEl.offsetHeight,
+        opacity: 1,
+      });
+    }
+
+    measure();
+    window.addEventListener("resize", measure);
+    return () => window.removeEventListener("resize", measure);
+  }, [activeHref]);
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : "";
@@ -80,13 +114,29 @@ export function Header() {
             </span>
           </Link>
 
-          <nav className="hidden items-center gap-1 rounded-full border border-border bg-surface/60 px-1.5 py-1.5 backdrop-blur-sm md:flex">
+          <nav
+            ref={navRef}
+            className="relative hidden items-center gap-1 rounded-full border border-border bg-surface/60 px-1.5 py-1.5 backdrop-blur-sm md:flex"
+          >
+            <motion.span
+              className="pointer-events-none absolute left-0 top-0 rounded-full bg-foreground"
+              animate={{
+                x: pillRect.left,
+                y: pillRect.top,
+                width: pillRect.width,
+                height: pillRect.height,
+                opacity: pillRect.opacity,
+              }}
+              initial={false}
+              transition={PILL_TRANSITION}
+            />
             {NAV_LINKS.map((link) => {
               if (link.type === "route") {
                 const isActive = location.pathname.startsWith(link.href);
                 return (
                   <Link
                     key={link.href}
+                    ref={(el) => { linkRefs.current[link.href] = el; }}
                     to={link.href}
                     onClick={() => setMobileOpen(false)}
                     className={cn(
@@ -94,13 +144,6 @@ export function Header() {
                       isActive ? "text-background" : "text-muted hover:text-foreground",
                     )}
                   >
-                    {isActive && (
-                      <motion.span
-                        layoutId="nav-active-pill"
-                        className="absolute inset-0 rounded-full bg-foreground"
-                        transition={PILL_TRANSITION}
-                      />
-                    )}
                     <span className="relative">{link.label}</span>
                   </Link>
                 );
@@ -111,6 +154,7 @@ export function Header() {
               return (
                 <a
                   key={link.href}
+                  ref={(el) => { linkRefs.current[link.href] = el; }}
                   href={isHome ? link.href : `/${link.href}`}
                   onClick={(e) => handleNavClick(e, link.href)}
                   className={cn(
@@ -118,13 +162,6 @@ export function Header() {
                     isActive ? "text-background" : "text-muted hover:text-foreground",
                   )}
                 >
-                  {isActive && (
-                    <motion.span
-                      layoutId="nav-active-pill"
-                      className="absolute inset-0 rounded-full bg-foreground"
-                      transition={PILL_TRANSITION}
-                    />
-                  )}
                   <span className="relative">{link.label}</span>
                 </a>
               );

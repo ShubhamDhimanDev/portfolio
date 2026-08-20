@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ApiError } from "@/lib/api-client";
 import { fetchBlogPost } from "@/lib/blog-api";
 import type { BlogPost } from "@/types/blog.types";
@@ -11,15 +11,26 @@ interface UseBlogPostResult {
   refetch: () => void;
 }
 
-export function useBlogPost(slug: string | undefined): UseBlogPostResult {
-  const [post, setPost] = useState<BlogPost | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+/**
+ * @param preloadedPost Post data the route's loader already fetched for this
+ * exact slug (see BlogPostPage.tsx) - when present, the initial fetch below
+ * is skipped so the page doesn't hit the API twice on first render.
+ */
+export function useBlogPost(slug: string | undefined, preloadedPost?: BlogPost | null): UseBlogPostResult {
+  const [post, setPost] = useState<BlogPost | null>(preloadedPost ?? null);
+  const [isLoading, setIsLoading] = useState(!preloadedPost);
   const [error, setError] = useState<string | null>(null);
   const [notFound, setNotFound] = useState(false);
   const [refetchToken, setRefetchToken] = useState(0);
+  const skipNextFetch = useRef(!!preloadedPost);
 
   useEffect(() => {
     if (!slug) return;
+
+    if (skipNextFetch.current) {
+      skipNextFetch.current = false;
+      return;
+    }
 
     const controller = new AbortController();
 
